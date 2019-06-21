@@ -22,7 +22,6 @@ class PikaConsumer(object):
     commands that were issued and that should surface in the output as well.
 
     """
-    EXCHANGE = 'message'
     EXCHANGE_TYPE = 'topic'
 
     def __init__(self, amqp_url, exchange, queue, routing_key):
@@ -142,7 +141,7 @@ class PikaConsumer(object):
         LOGGER.info('Channel opened')
         self._channel = channel
         self.add_on_channel_close_callback()
-        self.setup_exchange(self.EXCHANGE)
+        self.setup_exchange(self.exchange)
 
     def add_on_channel_close_callback(self):
         """This method tells pika to call the on_channel_closed method if
@@ -193,7 +192,7 @@ class PikaConsumer(object):
 
         """
         LOGGER.info('Exchange declared: %s', userdata)
-        self.setup_queue(self.QUEUE)
+        self.setup_queue(self.queue)
 
     def setup_queue(self, queue_name):
         """Setup the queue on RabbitMQ by invoking the Queue.Declare RPC
@@ -272,7 +271,7 @@ class PikaConsumer(object):
         LOGGER.info('Issuing consumer related RPC commands')
         self.add_on_cancel_callback()
         self._consumer_tag = self._channel.basic_consume(
-            self.QUEUE, self.on_message)
+            self.queue, self.on_message)
         self.was_consuming = True
         self._consuming = True
 
