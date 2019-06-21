@@ -66,12 +66,7 @@ def main():
 
     rabbitmq_config = config['rabbitmq']
 
-    consumer = PikaConsumer(
-        rabbitmq_config['url'],
-        rabbitmq_config['queue'],
-        rabbitmq_config['routing_key'],
-        logging.getLogger('pika-consumer')
-    )
+    consumer = PikaConsumer(rabbitmq_config['url'])
 
     stop_event = threading.Event()
 
