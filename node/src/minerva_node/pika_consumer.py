@@ -24,10 +24,8 @@ class PikaConsumer(object):
     """
     EXCHANGE = 'message'
     EXCHANGE_TYPE = 'topic'
-    QUEUE = 'text'
-    ROUTING_KEY = 'example.text'
 
-    def __init__(self, amqp_url):
+    def __init__(self, amqp_url, exchange, queue, routing_key):
         """Create a new instance of the consumer class, passing in the AMQP
         URL used to connect to RabbitMQ.
 
@@ -47,6 +45,10 @@ class PikaConsumer(object):
         # for higher consumer throughput
         self._prefetch_count = 1
         self.handle_message = None
+
+        self.exchange = exchange
+        self.queue = queue
+        self.routing_key = routing_key
 
     def connect(self):
         """This method connects to RabbitMQ, returning the connection handle.
@@ -216,14 +218,13 @@ class PikaConsumer(object):
         :param str|unicode userdata: Extra user data (queue name)
 
         """
-        queue_name = userdata
-        LOGGER.info('Binding %s to %s with %s', self.EXCHANGE, queue_name,
-                    self.ROUTING_KEY)
+        LOGGER.info('Binding %s to %s with %s', self.exchange, self.queue,
+                    self.routing_key)
         cb = functools.partial(self.on_bindok, userdata=queue_name)
         self._channel.queue_bind(
-            queue_name,
-            self.EXCHANGE,
-            routing_key=self.ROUTING_KEY,
+            self.queue,
+            self.exchange,
+            routing_key=self.routing_key,
             callback=cb)
 
     def on_bindok(self, _unused_frame, userdata):
