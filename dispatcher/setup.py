@@ -7,7 +7,6 @@ setup(
     version="4.4.0",
     install_requires=[
         "configobj",
-        "minerva>=5.0.0",
         "pyinotify",
         "pyyaml",
         "pika"

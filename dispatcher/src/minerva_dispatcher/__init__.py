@@ -6,8 +6,6 @@ import re
 
 import pyinotify
 
-from minerva.util import no_op
-
 from minerva_dispatcher.harvestjobsource import HarvestJobSource, JOB_TYPE
 from minerva_dispatcher.error import ConfigError
 from minerva_dispatcher.pika_publisher import Publisher
@@ -119,6 +117,10 @@ def watch_source(watch_manager, enqueue, job_source):
         uri, EVENT_MASK, proc_fun=proc_fun, rec=recursive, auto_add=True)
 
     logging.info("watching {} with filter {}".format(uri, match_pattern))
+
+
+def no_op(*args, **kwargs):
+    pass
 
 
 def event_handler(handler_map, default_handler=no_op):

@@ -10,9 +10,6 @@ import threading
 
 from nose.tools import eq_
 
-from minerva.instance import MinervaInstance
-from minerva.system.jobsource import JobSource
-
 
 TEST_CONFIG = """\
 log_directory = /tmp/dispatcher_test/
