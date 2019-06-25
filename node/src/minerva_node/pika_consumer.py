@@ -144,6 +144,8 @@ class PikaConsumer(object):
 
         if self.exchange:
             self.setup_exchange(self.exchange)
+        else:
+            self.setup_queue(self.queue)
 
     def add_on_channel_close_callback(self):
         """This method tells pika to call the on_channel_closed method if
@@ -221,7 +223,7 @@ class PikaConsumer(object):
         """
         LOGGER.info('Binding %s to %s with %s', self.exchange, self.queue,
                     self.routing_key)
-        cb = functools.partial(self.on_bindok, userdata=queue_name)
+        cb = functools.partial(self.on_bindok, userdata=self.queue)
         self._channel.queue_bind(
             self.queue,
             self.exchange,
