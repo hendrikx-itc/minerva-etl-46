@@ -1,13 +1,6 @@
 #!/bin/bash
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-# Make sure the following commands are always run in the same directory as the
-# script, because some paths are relative or dependent on the current working
-# directory.
-pushd $SCRIPT_DIR
+docker build -t package -f Dockerfile.package "$SCRIPT_DIR/docker-context"
 
-docker build -t package -f Dockerfile.package docker-context
-
-docker run --rm -v $(pwd):/package/source -v $(pwd)/pkg-build:/package/build package build-package
-
-popd
+docker run --rm -v "$SCRIPT_DIR:/package/source" -v "$SCRIPT_DIR/pkg-build:/package/build" package build-package
