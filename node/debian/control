@@ -2,8 +2,9 @@ Source: minerva-node
 Section: contrib/misc
 Priority: extra
 Maintainer: Alfred Blokland <alfred.blokland@hendrikx-itc.nl>
-Build-Depends: debhelper (>= 8.0.0)
+Build-Depends: debhelper (>= 8.0.0), dh-python, python-all-dev, python-setuptools
 Standards-Version: 3.9.3
+X-Python-Version: >= 2.7
 Homepage: http://www.hendrikx-itc.nl
 
 Package: minerva-node
