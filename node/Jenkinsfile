@@ -16,7 +16,7 @@ node ('git') {
                 sh './make-changelog'
             }
 
-            sh './package'
+            sh './node/package'
 
             publishPackages buildDir.toString(), 'common/stable', 'xenial'
 
