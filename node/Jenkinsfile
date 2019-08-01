@@ -16,11 +16,7 @@ node ('git') {
                 sh './make-changelog'
             }
 
-            docker.withRegistry("https://${docker_registry}", 'hitc-docker-registry') {
-                docker.image('ubuntu-1604-packaging').inside("-v ${workspace}/node:/package/source -v ${workspace}/${buildDir}:/package/build") {
-                    sh 'package'
-                }
-            }
+            sh './package'
 
             publishPackages buildDir.toString(), 'common/stable', 'xenial'
 

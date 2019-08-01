@@ -1,10 +1,4 @@
 #!/bin/bash
-pushd debian
-
-./make-changelog
-
-popd
-
 docker build -t package -f Dockerfile.package docker-context
 
 docker run --rm -v $(pwd):/package/source -v $(pwd)/pkg-build:/package/build package build-package
