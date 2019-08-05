@@ -4,8 +4,7 @@ RUN apt-get update && apt-get install -y \
     dpkg-dev \
     debhelper \
     devscripts \
-    equivs \
-    python2.7
+    equivs
 
 COPY build-package /usr/bin/
 
