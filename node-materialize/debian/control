@@ -2,7 +2,7 @@ Source: python-minerva-node-materialize
 Section: contrib/misc
 Priority: extra
 Maintainer: Hendrikx ITC (Software Package Signing Key) <info@hendrikx-itc.nl>
-Build-Depends: debhelper (>= 8.0.0)
+Build-Depends: debhelper (>= 8.0.0), dh-python, python-all-dev, python-setuptools
 Standards-Version: 3.9.4
 Homepage: http://www.hendrikx-itc.nl
 
