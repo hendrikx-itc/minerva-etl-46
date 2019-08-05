@@ -2,7 +2,7 @@ Source: python-minerva-harvesting
 Section: contrib/misc
 Priority: extra
 Maintainer: Alfred Blokland <a.j.n.blokland@hendrikx-itc.nl>
-Build-Depends: debhelper (>= 8.0.0)
+Build-Depends: debhelper (>= 8.0.0), dh-python, python-all-dev, python-setuptools
 Standards-Version: 3.9.3
 Homepage: http://hendrikx-itc.nl
 
