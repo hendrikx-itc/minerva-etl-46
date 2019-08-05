@@ -6,17 +6,17 @@ node ('git') {
     stage ('build') {
         // Report status of stage 'build' back to Gitlab
         gitlabCommitStatus(name: 'build') {
-            def buildDir = 'node-harvest/pkg-build'
+            def buildDir = 'node-materialize/pkg-build'
 
             // Clean the build directory before starting
             sh "rm -rf ${buildDir}"
             sh "mkdir -p ${buildDir}"
 
-            dir ('node-harvest/debian') {
+            dir ('node-materialize/debian') {
                 sh './make-changelog'
             }
 
-            sh './node-harvest/package'
+            sh './node-materialize/package'
 
             publishPackages buildDir.toString(), 'common/stable', 'xenial'
 
