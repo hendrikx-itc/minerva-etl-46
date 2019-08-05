@@ -9,7 +9,7 @@ Homepage: http://hendrikx-itc.nl
 
 Package: python-minerva-harvesting
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, python, python-minerva, python-tz, python-psycopg2 (>= 2.2.0), python-progressbar
+Depends: ${misc:Depends}, python, python-minerva, python-tz, python-psycopg2 (>= 2.2.0), python-progressbar
 Replaces: minerva-harvester
 Conflicts: minerva-harvester
 Description: Minerva harvesting library and tools
