@@ -110,8 +110,7 @@ def main():
     signal.signal(signal.SIGINT, stop)
 
     try:
-        setup_logging(config["log_directory"], config["log_filename"],
-                      config["log_rotation_size"], config["log_level"])
+        setup_logging(config["log_level"])
     except IOError as exc:
         print(exc)
         return 1
@@ -177,7 +176,7 @@ def resilient_db_exec(action, stop_event):
     retry_while(action, EXCEPTION_HANDLER_MAP, condition)
 
 
-def setup_logging(directory, filename, rotation_size, level):
+def setup_logging(level):
     """Setup logging with rotating log files."""
     level_map = {
         "DEBUG": logging.DEBUG,
@@ -186,19 +185,13 @@ def setup_logging(directory, filename, rotation_size, level):
         "ERROR": logging.ERROR,
         "CRITICAL": logging.CRITICAL}
 
-    max_log_size = parse_size(rotation_size)
-
-    filepath = os.path.join(directory, filename)
-    handler = RotatingFileHandler(filepath, maxBytes=max_log_size,
-                                  backupCount=5)
-    handler.setLevel(level_map[level])
-
-    formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
-    handler.setFormatter(formatter)
+    log_handler = logging.StreamHandler()
+    formatter = logging.Formatter("%(levelname)s %(message)s")
+    log_handler.setFormatter(formatter)
 
     rootlogger = logging.getLogger("")
     rootlogger.setLevel(level_map[level])
-    rootlogger.addHandler(handler)
+    rootlogger.addHandler(log_handler)
 
 
 class GenerateConfigFileAction(argparse.Action):

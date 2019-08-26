@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e 
+
+mk-build-deps -t 'apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -y' -i debian/control
+
+cd /package/source
+
+dpkg-buildpackage -rfakeroot
+
+build_dir="/package/build/"
+
+# Move the resulting package files into build dir
+find /package -maxdepth 1 -type f | xargs mv --target-directory "$build_dir"
+
+# Make the owner of the build directory the owner of the package
+# files.
+find /package/build | xargs chown --reference="/package/build"
