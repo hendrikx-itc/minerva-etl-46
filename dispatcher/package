@@ -10,7 +10,7 @@ mkdir -p "$PKG_DIR"
 #----------------------------------------
 # Build for specified Ubuntu distribution
 #----------------------------------------
-docker build -t "package-${DISTRIBUTION}" -f "Dockerfile.${DISTRIBUTION}.package" "$SCRIPT_DIR/docker-context"
+docker build -t "package-${DISTRIBUTION}" -f "${SCRIPT_DIR}/Dockerfile.${DISTRIBUTION}.package" "$SCRIPT_DIR/docker-context"
 
 docker run --rm -v "$SCRIPT_DIR:/package/source" -v "$PKG_DIR:/package/build" "package-${DISTRIBUTION}" build-package
 
