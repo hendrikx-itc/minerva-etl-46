@@ -6,25 +6,33 @@ node ('git') {
     stage ('build') {
         // Report status of stage 'build' back to Gitlab
         gitlabCommitStatus(name: 'build') {
-            def buildDir = 'dispatcher/pkg-build'
-
-            // Clean the build directory before starting
-            sh "rm -rf ${buildDir}"
-            sh "mkdir -p ${buildDir}"
-
             dir ('dispatcher/debian') {
                 sh './make-changelog'
             }
 
-            docker.withRegistry("https://${docker_registry}", 'hitc-docker-registry') {
-                docker.image('ubuntu-1604-packaging').inside("-v ${workspace}/dispatcher:/package/source -v ${workspace}/${buildDir}:/package/build") {
-                    sh 'package'
-                }
-            }
+            //---------------------------
+            // Build Ubuntu 16.04 package
+            //---------------------------
+            def buildDir1604 = 'pkg-build/1604'
 
-            publishPackages buildDir.toString(), 'common/stable', 'xenial'
+            // Clean the build directory before starting
+            sh "rm -rf ${buildDir1604}"
 
-            archiveArtifacts(artifacts: "${buildDir}/*")
+            sh './package 1604'
+            publishPackages buildDir1604.toString(), 'common/stable', 'xenial'
+            archiveArtifacts(artifacts: "${buildDir1604}/*")
+
+            //---------------------------
+            // Build Ubuntu 18.04 package
+            //---------------------------
+            def buildDir1804 = 'pkg-build/1804'
+
+            // Clean the build directory before starting
+            sh "rm -rf ${buildDir1804}"
+
+            sh './package 1804'
+            publishPackages buildDir1804.toString(), 'common/bionic', 'bionic'
+            archiveArtifacts(artifacts: "${buildDir1804}/*")
         }
     }
 }
