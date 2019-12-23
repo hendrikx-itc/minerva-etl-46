@@ -66,7 +66,12 @@ def main():
 
     rabbitmq_config = config['rabbitmq']
 
-    consumer = PikaConsumer(rabbitmq_config['url'], rabbitmq_config.get('exchange', ''), rabbitmq_config['queue'], rabbitmq_config['routing_key'])
+    consumer = PikaConsumer(
+        rabbitmq_config['url'],
+        rabbitmq_config.get('exchange', ''),
+        rabbitmq_config['queue'],
+        rabbitmq_config['routing_key']
+    )
 
     stop_event = threading.Event()
 
@@ -136,7 +141,11 @@ def setup_node(stop_event, minerva_context, queue_conn):
         except ValueError:
             logging.error("invalid job description: {}".format(job_message))
         else:
-            process_job(minerva_context.conn, create_job(plugin_dict, job))
+            job = create_job(plugin_dict, job)
+
+            logging.info("received job {}".format(job))
+
+            process_job(minerva_context.conn, job)
 
     queue_conn.handle_message = on_message
 

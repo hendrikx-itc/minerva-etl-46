@@ -67,9 +67,9 @@ class PikaConsumer(object):
     def close_connection(self):
         self._consuming = False
         if self._connection.is_closing or self._connection.is_closed:
-            LOGGER.info('Connection is closing or already closed')
+            LOGGER.debug('Connection is closing or already closed')
         else:
-            LOGGER.info('Closing connection')
+            LOGGER.debug('Closing connection')
             self._connection.close()
 
     def on_connection_open(self, _unused_connection):
@@ -80,7 +80,7 @@ class PikaConsumer(object):
         :param pika.SelectConnection _unused_connection: The connection
 
         """
-        LOGGER.info('Connection opened')
+        LOGGER.debug('Connection opened')
         self.open_channel()
 
     def on_connection_open_error(self, _unused_connection, err):
@@ -126,7 +126,7 @@ class PikaConsumer(object):
         on_channel_open callback will be invoked by pika.
 
         """
-        LOGGER.info('Creating a new channel')
+        LOGGER.debug('Creating a new channel')
         self._connection.channel(on_open_callback=self.on_channel_open)
 
     def on_channel_open(self, channel):
@@ -138,7 +138,7 @@ class PikaConsumer(object):
         :param pika.channel.Channel channel: The channel object
 
         """
-        LOGGER.info('Channel opened')
+        LOGGER.debug('Channel opened')
         self._channel = channel
         self.add_on_channel_close_callback()
 
@@ -152,7 +152,7 @@ class PikaConsumer(object):
         RabbitMQ unexpectedly closes the channel.
 
         """
-        LOGGER.info('Adding channel close callback')
+        LOGGER.debug('Adding channel close callback')
         self._channel.add_on_close_callback(self.on_channel_closed)
 
     def on_channel_closed(self, channel, reason):
@@ -259,7 +259,7 @@ class PikaConsumer(object):
         :param pika.frame.Method _unused_frame: The Basic.QosOk response frame
 
         """
-        LOGGER.info('QOS set to: %d', self._prefetch_count)
+        LOGGER.debug('QOS set to: %d', self._prefetch_count)
         self.start_consuming()
 
     def start_consuming(self):
@@ -272,7 +272,7 @@ class PikaConsumer(object):
         will invoke when a message is fully received.
 
         """
-        LOGGER.info('Issuing consumer related RPC commands')
+        LOGGER.debug('Issuing consumer related RPC commands')
         self.add_on_cancel_callback()
         self._consumer_tag = self._channel.basic_consume(
             self.queue, self.on_message)
@@ -285,7 +285,7 @@ class PikaConsumer(object):
         on_consumer_cancelled will be invoked by pika.
 
         """
-        LOGGER.info('Adding consumer cancellation callback')
+        LOGGER.debug('Adding consumer cancellation callback')
         self._channel.add_on_cancel_callback(self.on_consumer_cancelled)
 
     def on_consumer_cancelled(self, method_frame):
@@ -314,7 +314,7 @@ class PikaConsumer(object):
         :param bytes body: The message body
 
         """
-        LOGGER.info('Received message # %s from %s: %s',
+        LOGGER.debug('Received message # %s from %s: %s',
                     basic_deliver.delivery_tag, properties.app_id, body)
 
         if self.handle_message is not None:
@@ -329,7 +329,7 @@ class PikaConsumer(object):
         :param int delivery_tag: The delivery tag from the Basic.Deliver frame
 
         """
-        LOGGER.info('Acknowledging message %s', delivery_tag)
+        LOGGER.debug('Acknowledging message %s', delivery_tag)
         self._channel.basic_ack(delivery_tag)
 
     def stop_consuming(self):
@@ -338,7 +338,7 @@ class PikaConsumer(object):
 
         """
         if self._channel:
-            LOGGER.info('Sending a Basic.Cancel RPC command to RabbitMQ')
+            LOGGER.debug('Sending a Basic.Cancel RPC command to RabbitMQ')
             cb = functools.partial(
                 self.on_cancelok, userdata=self._consumer_tag)
             self._channel.basic_cancel(self._consumer_tag, cb)
@@ -354,7 +354,7 @@ class PikaConsumer(object):
 
         """
         self._consuming = False
-        LOGGER.info(
+        LOGGER.debug(
             'RabbitMQ acknowledged the cancellation of the consumer: %s',
             userdata)
         self.close_channel()
@@ -364,7 +364,7 @@ class PikaConsumer(object):
         Channel.Close RPC command.
 
         """
-        LOGGER.info('Closing the channel')
+        LOGGER.debug('Closing the channel')
         self._channel.close()
 
     def run(self):
@@ -388,11 +388,11 @@ class PikaConsumer(object):
         """
         if not self._closing:
             self._closing = True
-            LOGGER.info('Stopping')
+            LOGGER.debug('Stopping')
             if self._consuming:
                 self.stop_consuming()
                 self._connection.ioloop.start()
             else:
                 self._connection.ioloop.stop()
-            LOGGER.info('Stopped')
+            LOGGER.debug('Stopped')
 
